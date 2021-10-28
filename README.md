@@ -1,6 +1,6 @@
 # auth-api
 
-Express Server
+Access Control
 Created by Jacob Gregor
 
 ## Installation\
@@ -26,24 +26,53 @@ npm install\
 .env{
 PORT=3000
 NODE_ENV=test
-SECRET=secret
+SECRET=test
 }
+
+## Business Requirements
+
+Refer to the Authentication System Overview for a complete review of the application, including Business and Technical requirements along with the development roadmap.\
 
 ## Summary of Problem Domain\
 
-## lab-07: Technical Requirements / Notes
+## lab-08: Technical Requirements / Notes
 
-Authentication Server Phase 2: Token (Bearer) Authentication\
+In this final phase, the new requirement is to extend the restrictive capabilities of our routes to our API, implementing a fully functional, authenticated and authorized API Server using the latest coding techniques\
 
-At this point, our auth-server is able to allow a user to create an account as well as to handle Basic Authentication (user provides a username + password). When a “good” login happens, the user is considered to be “authenticated” and our auth-server generates a JWT signed “Token” which is returned to the application\
+Specifically, we want to make the following restrictions:\
 
-We will now be using that Token to re-authenticate users to shield access to any route that requires a valid login to access.\
+Regular users can READ\
+Writers can READ and CREATE\
+Editors can READ, CREATE, and UPDATE\
+Administrators can READ, CREATE, UPDATE, and DELETE\
+Routes that end up performing those actions in our API/Database need to be protected by both a valid user and that user’s permissions\
+
+## Task 1: Combine these 2 servers into a single server\
+
+Your server should respond to the following routes:\
+POST /signup to create a user\
+POST /signin to login a user and receive a token\
+GET /secret should require a valid bearer token\
+GET /users should require a valid token and “delete” permissions\
+NOTE: You will have some duplicated files and functionality between the 2 servers. Eliminate the waste and end with a single running server with all current routes functional\
+
+## Task 2: Create a new set of “Protected” API routes\
+
+Restrict access without a valid token AND a specific capability.\
+
+Create a new set of routes (V2) within the server\
+V2 API Routes (/api/v2/...) must now be protected with the proper permissions based on user capability, using Bearer Authentication and an ACL\
+`app.get(...)` should require authentication only, no specific roles\
+`app.post(...)` should require both a bearer token and the create capability\
+`app.put(...)` should require both a bearer token and the update capability\
+`app.patch(...) `should require both a bearer token and the update capability\
+`app.delete(...)` should require both a bearer token and the delete capability\
 
 ## Links to application deployment\
 
-Heroku: https://bearer-auth-jacob.herokuapp.com
-GitHub: https://github.com/Code-Fellows-401/baerer-auth
-GitHub PR: https://github.com/Code-Fellows-401/baerer-auth/pulls?q=is%3Apr+is%3Aclosed
+Heroku: https://auth-api-jacob.herokuapp.com
+GitHub: https://github.com/Code-Fellows-401/auth-api
+GitHub PR: https://github.com/Code-Fellows-401/auth-api/pulls?q=is%3Apr+is%3Aclosed
 
 ## Embedded UML\
 
@@ -96,3 +125,37 @@ Secret Area redirect
 authRouter.get('/secret', bearerAuth, async (req, res, next) => {
 res.status(200).send('Welcome to the secret area!');
 });
+
+## Route: /clothes
+
+Path: /clothes responds with all { Object } with a key: value pair as follows -> {name: 'Name Here', city: 'Name Here'}.
+HTTP GET
+
+Path: /clothes:id responds with a specific { Object } based on the input Id with a key: value pair as follows -> {name: 'Name Here', city: 'Name Here'}.
+HTTP GET
+
+Path: /clothes Creates an specific { Object } based on the input model with a key: value pair as follows -> {name: 'Name Here', city: 'Name Here'}.
+HTTP POST
+
+Path: /clothes:id Updates a specific { Object } based on the id reference and the input model with a key: value pair as follows -> {name: 'Name Here', city: 'Name Here'}.
+HTTP PUT
+
+Path: /clothes:id Deletes a specific { Object } based on the id reference.
+HTTP DELETE
+
+Route: /food
+
+Path: /food responds with all { Object } with a key: value pair as follows -> {name: 'Name Here', position: 'Name Here'}.
+HTTP GET
+
+Path: /food:id responds with a specific { Object } based on the input Id with a key: value pair as follows -> {name: 'Name Here', position: 'Name Here'}.
+HTTP GET
+
+Path: /food Creates an specific { Object } based on the input model with a key: value pair as follows -> {name: 'Name Here', position: 'Name Here'}.
+HTTP POST
+
+Path: /food:id Updates a specific { Object } based on the id reference and the input model with a key: value pair as follows -> {name: 'Name Here', position: 'Name Here'}.
+HTTP PUT
+
+Path: /food:id Deletes a specific { Object } based on the id reference.
+HTTP DELETE
